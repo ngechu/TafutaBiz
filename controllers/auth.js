@@ -28,7 +28,7 @@ exports.login = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse("Please provide an email and password", 400));
   }
   //Check for user
-  const user = await User.findOne({ email: email }).select("+password");
+  const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
     return next(new ErrorResponse("Invalid Credentials !!", 401));
@@ -43,6 +43,20 @@ exports.login = asyncHandler(async (req, res, next) => {
 
   //create token
   sendTokenResponse(user, 200, res);
+});
+
+//Get logged in user details
+exports.getUserDetails = asyncHandler(async (req, res, next) => {
+  if (req.body.user) {
+    const { id } = req.body.user;
+    // Search in mongdb using id
+    const user = await User.findById(id).exec();
+
+    console.log("++++++++++++++++++++++++++++++++++++++", user);
+
+    return res.json(user);
+  }
+  return res.json({ error: "Please Log in first" });
 });
 
 //Get token from model and also send token response
