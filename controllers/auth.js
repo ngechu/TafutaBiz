@@ -57,13 +57,11 @@ const sendTokenResponse = (user, statusCode, response) => {
     ),
     httpOnly: true,
   };
+  //Ensure token secure is secure while in production
+
   if (process.env.NODE_ENV === "production") {
     options.secure = true;
   }
-  response
-    .status(statusCode)
-    .cookie("token", token, options)
-    .json({ success: true, token });
 
   response.status(200).json({ success: true, token: token });
 };
